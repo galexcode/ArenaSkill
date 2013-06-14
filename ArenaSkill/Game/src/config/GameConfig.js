@@ -7,7 +7,7 @@ G.GAME_STATE = {
 
 //keys
 G.KEYS = [];
-G.TOUCH = [];
+G.TOUCH = null;
 G.INPUT_DELAY_TIME = 0.3; // in seconds
 
 //level

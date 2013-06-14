@@ -43,15 +43,17 @@ var GameLayer = cc.Layer.extend({
             G.SNAKE[0] = this._leader;
             this.addChild(this._leader, this._leader.zOrder, G.UNIT_TAG.PLAYER);
 
-            // follower
-            var follower = new Follower();
-            this.addChild(follower, follower.zOrder, G.UNIT_TAG.FOLLOWER);
-
-            // add more Followers
-            for(var i=0;i<2;i++) {
+            if(true) {
                 // follower
-                follower = new Follower();
+                var follower = new Follower();
                 this.addChild(follower, follower.zOrder, G.UNIT_TAG.FOLLOWER);
+
+                // add more Followers
+                for(var i=0;i<2;i++) {
+                    // follower
+                    follower = new Follower();
+                    this.addChild(follower, follower.zOrder, G.UNIT_TAG.FOLLOWER);
+                }
             }
 
             // camera follows the leader
@@ -94,14 +96,14 @@ var GameLayer = cc.Layer.extend({
     },
     onTouchesMoved:function (touches, event) {
         if(this._isTouch){
-            cc.log(touches.length);
             //cc.log(touches[0].getDelta().x);
             //cc.log(touches[0].getDelta().y);
 
-            //this.processEvent(touches[0]);
+            G.TOUCH = touches[0];
         }
     },
     onTouchesEnded:function(touches, event){
+        G.TOUCH = null;
         this._isTouch = false;
     },
     onMouseDragged:function( event ) {

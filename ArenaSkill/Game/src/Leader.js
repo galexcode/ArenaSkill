@@ -32,11 +32,74 @@ var Leader = cc.Sprite.extend({
         this.moveWithFrameSetID(this.walkDownFrameSetID, spawnPosition);
     },
     update:function (dt) {
-        var newAction = null;
+        var newAction = null, pos = null;
+
+        var swipeUp = null, swipeDown = null, swipeLeft = null, swipeRight = null;
+
+        if(G.TOUCH) {
+            var deltaPos = G.TOUCH.getDelta();
+            if(Math.abs(deltaPos.x) > Math.abs(deltaPos.y)) {
+                // left / right
+                if(deltaPos.x > 0) {
+                    swipeRight = true;
+                } else {
+                    swipeLeft = true;
+                }
+            } else {
+                // up / down
+                if(deltaPos.y > 0) {
+                    swipeUp = true;
+                } else {
+                    swipeDown = true;
+                }
+            }
+        }
+
+        if( this._isAcceptingInput ) {
+            pos = this.getPosition();
+
+            // move up
+            if (swipeUp &&
+                this.currentFrameSetID != this.walkUpFrameSetID &&
+                this.currentFrameSetID != this.walkDownFrameSetID &&
+                pos.y <= G.MAP.HEIGHT) {
+
+                newAction = this.moveWithFrameSetID(this.walkUpFrameSetID, pos);
+                G.TURNING_PTS.push(pos);
+            }
+            // move down
+            else if (swipeDown &&
+                this.currentFrameSetID != this.walkDownFrameSetID &&
+                this.currentFrameSetID != this.walkUpFrameSetID &&
+                pos.y >= 0) {
+
+                newAction = this.moveWithFrameSetID(this.walkDownFrameSetID, pos);
+                G.TURNING_PTS.push(pos);
+            }
+            // move left
+            else if (swipeLeft &&
+                this.currentFrameSetID != this.walkLeftFrameSetID &&
+                this.currentFrameSetID != this.walkRightFrameSetID &&
+                pos.x >= 0) {
+
+                newAction = this.moveWithFrameSetID(this.walkLeftFrameSetID, pos);
+                G.TURNING_PTS.push(pos);
+            }
+            // move right
+            else if (swipeRight &&
+                this.currentFrameSetID != this.walkRightFrameSetID &&
+                this.currentFrameSetID != this.walkLeftFrameSetID &&
+                pos.x <= G.MAP.WIDTH) {
+
+                newAction = this.moveWithFrameSetID(this.walkRightFrameSetID, pos);
+                G.TURNING_PTS.push(pos);
+            }
+        }
+
 
         // Keys are only enabled on the browser
-        if( this._isAcceptingInput && sys.platform == 'browser' ) {
-            var pos = this.getPosition();
+        if( this._isAcceptingInput && sys.platform == 'browser') {
+            pos = this.getPosition();
 
             // move up
             if ((G.KEYS[cc.KEY.w] || G.KEYS[cc.KEY.up]) &&
